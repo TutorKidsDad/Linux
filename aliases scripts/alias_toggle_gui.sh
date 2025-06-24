@@ -28,17 +28,26 @@ if [ -z "$CHOICES" ]; then
     exit 1
 fi
 
-echo "# User-defined Aliases via Zenity GUI" > "$ALIAS_FILE"
-IFS=":" read -ra SELECTED <<< "$CHOICES"
-for group in "${SELECTED[@]}"; do
-    echo -e "\n# $group Aliases" >> "$ALIAS_FILE"
-    while IFS= read -r line; do
-        if [[ "$line" =~ ^[a-zA-Z_][a-zA-Z0-9_]*=.*$ ]]; then
-            echo "alias $line" >> "$ALIAS_FILE"
-        fi
-    done <<< "$(echo -e "${GROUPS[$group]}")"
-done
+# Remove previous Zenity alias block
+sed -i '/# BEGIN ZENITY ALIASES/,/# END ZENITY ALIASES/d' "$ALIAS_FILE"
 
+# Append new Zenity alias block
+{
+  echo -e "\n# BEGIN ZENITY ALIASES"
+  echo "# User-defined Aliases via Zenity GUI"
+  IFS=":" read -ra SELECTED <<< "$CHOICES"
+  for group in "${SELECTED[@]}"; do
+      echo -e "\n# $group Aliases"
+      while IFS= read -r line; do
+          if [[ "$line" =~ ^[a-zA-Z_][a-zA-Z0-9_]*=.*$ ]]; then
+              echo "alias $line"
+          fi
+      done <<< "$(echo -e "${GROUPS[$group]}")"
+  done
+  echo "# END ZENITY ALIASES"
+} >> "$ALIAS_FILE"
+
+# Ensure it's sourced
 if ! grep -qF "source $ALIAS_FILE" ~/.bashrc; then
     echo "source $ALIAS_FILE" >> ~/.bashrc
 fi
@@ -47,3 +56,4 @@ if [ -f ~/.zshrc ] && ! grep -qF "source $ALIAS_FILE" ~/.zshrc; then
 fi
 
 zenity --info --text="Aliases updated! Run 'source ~/.bashrc' or restart terminal to apply."
+
