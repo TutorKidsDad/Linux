@@ -5,9 +5,12 @@ alias chrome='google-chrome'
 alias brave='brave-browser'
 
 # 📄 Office
-alias writer='libreoffice --writer'
-alias calc='libreoffice --calc'
-alias impress='libreoffice --impress'
+
+alias writer='/opt/libreoffice25.2/program/swriter'
+alias calc='/opt/libreoffice25.2/program/scalc'
+alias impress='/opt/libreoffice25.2/program/simpress'
+
+
 
 # 🛠️ Development
 alias editor='code'

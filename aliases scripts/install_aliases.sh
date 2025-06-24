@@ -1,10 +1,11 @@
-
 #!/bin/bash
 
 ALIAS_FILE="$HOME/.my_aliases"
 
-echo "Installing custom aliases to $ALIAS_FILE..."
-echo "# 🌐 Browsers
+echo "📦 Installing custom aliases to $ALIAS_FILE..."
+
+cat <<EOF > "$ALIAS_FILE"
+# 🌐 Browsers
 alias browser='firefox'
 alias chrome='google-chrome'
 alias brave='brave-browser'
@@ -13,6 +14,8 @@ alias brave='brave-browser'
 alias writer='/opt/libreoffice25.2/program/swriter'
 alias calc='/opt/libreoffice25.2/program/scalc'
 alias impress='/opt/libreoffice25.2/program/simpress'
+
+
 
 # 🛠️ Development
 alias editor='code'
@@ -114,15 +117,17 @@ alias gitclone='git clone'
 alias gitstatus='git status'
 alias gitadd='git add .'
 alias gitcommit='git commit -m'
-alias gitpush='git push'" > "$ALIAS_FILE"
+alias gitpush='git push'
+EOF
 
-# Ensure aliases are sourced in .bashrc or .zshrc
 if ! grep -qF "source $ALIAS_FILE" ~/.bashrc; then
     echo "source $ALIAS_FILE" >> ~/.bashrc
+    echo "✅ Aliases added to .bashrc"
 fi
 
 if [ -f ~/.zshrc ] && ! grep -qF "source $ALIAS_FILE" ~/.zshrc; then
     echo "source $ALIAS_FILE" >> ~/.zshrc
+    echo "✅ Aliases added to .zshrc"
 fi
 
-echo "Aliases installed. Run 'source ~/.bashrc' or restart terminal to apply."
+echo "✅ Aliases installed. Run 'source ~/.bashrc' or restart your terminal to apply them."

@@ -4,7 +4,7 @@ ALIAS_FILE="$HOME/.my_aliases"
 
 declare -A GROUPS
 GROUPS["Browsers"]="browser='firefox'\nchrome='google-chrome'\nbrave='brave-browser'"
-GROUPS["Office"]="writer='libreoffice --writer'\ncalc='libreoffice --calc'\nimpress='libreoffice --impress'"
+GROUPS["Office"]="writer='/opt/libreoffice25.2/program/swriter'\ncalc='/opt/libreoffice25.2/program/scalc'\nimpress='/opt/libreoffice25.2/program/simpress'"
 GROUPS["System"]="diskspace='df -h'\nmemusage='free -h'\nupdate='sudo apt update && sudo apt upgrade -y'"
 GROUPS["File Navigation"]="list='ls'\nlistall='ls -la'\ngo='cd'\nback='cd ..'\ngohome='cd ~'"
 GROUPS["Development"]="editor='code'\npython3='python'\nide='code .'"
@@ -28,15 +28,17 @@ if [ -z "$CHOICES" ]; then
     exit 1
 fi
 
-# Build alias file
 echo "# User-defined Aliases via Zenity GUI" > "$ALIAS_FILE"
 IFS=":" read -ra SELECTED <<< "$CHOICES"
 for group in "${SELECTED[@]}"; do
     echo -e "\n# $group Aliases" >> "$ALIAS_FILE"
-    echo -e "${GROUPS[$group]}" | sed 's/^/alias /' >> "$ALIAS_FILE"
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^[a-zA-Z_][a-zA-Z0-9_]*=.*$ ]]; then
+            echo "alias $line" >> "$ALIAS_FILE"
+        fi
+    done <<< "$(echo -e "${GROUPS[$group]}")"
 done
 
-# Source in shell configs
 if ! grep -qF "source $ALIAS_FILE" ~/.bashrc; then
     echo "source $ALIAS_FILE" >> ~/.bashrc
 fi
