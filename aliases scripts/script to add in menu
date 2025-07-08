@@ -1,0 +1,26 @@
+mkdir -p ~/.local/bin
+
+cat << 'EOF' > ~/.local/bin/alias-viewer
+#!/bin/bash
+show_custom_aliases
+exec bash
+EOF
+
+chmod +x ~/.local/bin/alias-viewer
+
+
+
+
+mkdir -p ~/.local/share/applications
+
+cat << 'EOF' > ~/.local/share/applications/alias-viewer.desktop
+[Desktop Entry]
+Name=Alias Viewer
+Comment=Show custom terminal aliases
+Exec=gnome-terminal -- bash -c 'show_custom_aliases; exec bash'
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=Utility;
+EOF
+
